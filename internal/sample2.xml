@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xml:base="https://portail.enercal.nc/std/transport/stat/_api/" xmlns="http://www.w3.org/2005/Atom"
+      xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
+      xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+>
+    <id>1c771471-6065-44ed-8fe0-71c0da2fca5a</id>
+    <title/>
+    <updated>2020-01-15T03:25:46Z</updated>
+</feed>
