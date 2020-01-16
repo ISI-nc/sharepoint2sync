@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"flag"
+	"fmt"
 	"github.com/antonin07130/sharepoint2sync/internal"
 	"html"
 	"io/ioutil"
@@ -41,7 +42,7 @@ var (
 )
 
 func main() {
-
+	fmt.Println("hey")
 	flag.StringVar(&url, "url", "", "sharepoint API url to request")
 	flag.BoolVar(&ntlmAuth, "ntlm-auth", false, "use NTLM for sharepoint server auth")
 	flag.StringVar(&user, "user", "", "username for sharepoint")
@@ -118,14 +119,14 @@ func main() {
 		}
 	}()
 
-	if resp.StatusCode >= 300 {
+	if resp.StatusCode != http.StatusOK {
 		contents, _ := ioutil.ReadAll(resp.Body)
-		log.Fatalf("StatusCode: %d, payload %s", resp.StatusCode, string(contents))
+		log.Fatalf("sharepoint response statusCode: %d, payload %s", resp.StatusCode, string(contents))
 	}
 
 	log.Printf("parsing sharepoint entries %s", url)
-	entries, err := internal.ParseSharepointEntries(resp.Body)
-
+	entries, err := internal.ParseJsonSharepointValues(resp.Body)
+	log.Printf("read %d entries from sharepoint", len(entries))
 	log.Printf("start transfer to sync2kafka %s", url)
 	if err = s2klient.StartTransfer(); err != nil {
 		log.Fatal(err)
@@ -157,12 +158,6 @@ func main() {
 	log.Printf("end transfer to sync2kafka %s", url)
 	err = s2klient.EndTransfer()
 	if err != nil {
-		log.Fatal(err)
-	}
-
-
-	// close s2k client
-	if err = s2klient.Close(); err != nil {
 		log.Fatal(err)
 	}
 }

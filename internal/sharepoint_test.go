@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_parseSharepointEntries(t *testing.T) {
+func Test_ParseXmlSharepointEntries(t *testing.T) {
 	type args struct {
 		fileName string
 	}
@@ -31,7 +31,7 @@ func Test_parseSharepointEntries(t *testing.T) {
 			defer xmlFile.Close()
 
 			t.Log("read entries")
-			entries,err := ParseSharepointEntries(xmlFile)
+			entries,err := ParseXmlSharepointEntries(xmlFile)
 			if err != nil {
 				t.Error(err)
 			}
