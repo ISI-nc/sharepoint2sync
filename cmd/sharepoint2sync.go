@@ -92,8 +92,9 @@ func main() {
 
 	// if we use the NTLM auth we create the ntlm transport
 	if ntlmAuth {
-		shpClient = &http.Client{
-			Transport: ntlmssp.Negotiator{
+		log.Println("sharepoint - use ntlm transport")
+		shpClient = &http.Client {
+			Transport: ntlmssp.Negotiator {
 				RoundTripper: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
 			},
 		}
@@ -104,7 +105,7 @@ func main() {
 	req.Header.Add("Charset", "utf-8")
 
 	if user != "" && password != "" {
-		log.Println("Set basic auth")
+		log.Println("sharepoint - set basic auth")
 		req.SetBasicAuth(user, password)
 	}
 
@@ -121,13 +122,13 @@ func main() {
 
 	if resp.StatusCode != http.StatusOK {
 		contents, _ := ioutil.ReadAll(resp.Body)
-		log.Fatalf("sharepoint response statusCode: %d, payload %s", resp.StatusCode, string(contents))
+		log.Fatalf("sharepoint - response statusCode: %d, payload %s", resp.StatusCode, string(contents))
 	}
 
-	log.Printf("parsing sharepoint entries %s", url)
+	log.Printf("sharepoint - parsing entries %s", url)
 	entries, err := internal.ParseJsonSharepointValues(resp.Body)
-	log.Printf("read %d entries from sharepoint", len(entries))
-	log.Printf("start transfer to sync2kafka %s", url)
+	log.Printf("sharepoint - read %d entries from sharepoint", len(entries))
+	log.Printf("sync2kafka - start transfer to sync2kafka %s", url)
 	if err = s2klient.StartTransfer(); err != nil {
 		log.Fatal(err)
 	}
@@ -153,9 +154,9 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	log.Printf("%d messages sent to sync2kafka", len(entries))
+	log.Printf("sync2kafka - %d messages sent to sync2kafka", len(entries))
 
-	log.Printf("end transfer to sync2kafka %s", url)
+	log.Printf("sync2kafka - end transfer to sync2kafka %s", url)
 	err = s2klient.EndTransfer()
 	if err != nil {
 		log.Fatal(err)

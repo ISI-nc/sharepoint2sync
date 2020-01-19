@@ -6,8 +6,12 @@ ENV CGO_ENABLED 0
 
 COPY . /usr/src/sharepoint2sync
 WORKDIR /usr/src/sharepoint2sync
-RUN go test ./... && go build -v ./cmd/sharepoint2sync.go
+RUN go test ./... && go build -o sharepoint2sync -v ./cmd/sharepoint2sync.go
 
-FROM alpine:3.11
+
+FROM debian:latest
+ENV TZ Pacific/Noumea
+
 ENTRYPOINT ["sharepoint2sync"]
+
 COPY --from=build /usr/src/sharepoint2sync/sharepoint2sync /bin/
