@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
-	"github.com/antonin07130/sharepoint2sync/internal"
+	"github.com/isi-nc/sharepoint2sync/internal"
 	"html"
 	"io/ioutil"
 	"log"
@@ -17,7 +17,7 @@ import (
 
 	"github.com/Azure/go-ntlmssp"
 
-	s2kClient "github.com/mcluseau/sync2kafka/client"
+	s2kClient "github.com/isi-nc/sync2kafka/client"
 )
 
 var (
