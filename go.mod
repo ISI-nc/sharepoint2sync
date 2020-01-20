@@ -1,4 +1,4 @@
-module github.com/antonin07130/sharepoint2sync
+module github.com/isi-nc/sharepoint2sync
 
 go 1.13
 
