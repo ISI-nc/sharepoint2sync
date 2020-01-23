@@ -27,8 +27,8 @@ var (
 	password string
 	ntlmAuth,
 	unescapeSp,
-	unescapeHtml bool
-
+	unescapeHtml,
+	jsonKey bool
 	// sync2kafka
 	useTls      = flag.Bool("use-tls", false, "use TLS connection")
 	skipVerify  = flag.Bool("skip-tls-verify", false, "skip tls verification")
@@ -41,6 +41,10 @@ var (
 	s2klient *s2kClient.BinarySync2KafkaClient
 )
 
+type JsonKey struct {
+	Id string `json:"ID"` // id of this entry
+}
+
 func main() {
 	fmt.Println("hey")
 	flag.StringVar(&url, "url", "", "sharepoint API url to request")
@@ -49,6 +53,7 @@ func main() {
 	flag.StringVar(&password, "password", "", "password for sharepoint")
 	flag.BoolVar(&unescapeSp, "unescapeSp", false, "unescape _xXXXX_ characters produced by sharepoint")
 	flag.BoolVar(&unescapeHtml, "unescapeHtml", true, "unescape html escaping (%20 etc...)")
+	flag.BoolVar(&jsonKey, "jsonKey", true, "write keys as {\"ID\":\"keyvalue\"}")
 
 	flag.Set("logtostderr", "true")
 	flag.Parse()
@@ -136,6 +141,7 @@ func main() {
 	for _, entry := range entries {
 		// process value
 		value := entry.Value
+
 		if unescapeSp {
 			value = internal.ReplaceEscapedXml(value)
 		}
@@ -144,9 +150,14 @@ func main() {
 			value = []byte(html.UnescapeString(string(value)))
 		}
 
+		key := []byte(entry.Id)
+		if jsonKey {
+			key = []byte("{\"ID\":\""+entry.Id+"\"}")
+		}
+
 		// send to sync2kafa
-		kv := s2kClient.BinaryKV{
-			Key:   []byte(entry.Id),
+		kv := s2kClient.BinaryKV {
+			Key:   key,
 			Value: value,
 		}
 
