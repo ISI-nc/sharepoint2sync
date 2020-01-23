@@ -69,7 +69,7 @@ func main() {
 	}
 	s2klient = s2kClient.NewBinary(&s2kClient.SyncInitInfo{
 		Format:   "",
-		DoDelete: false,
+		DoDelete: *doDelete,
 		Token:    *token,
 		Topic:    *topic,
 	}, *server, *skipVerify, *useTls, crt)
